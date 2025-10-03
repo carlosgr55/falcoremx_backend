@@ -5,6 +5,8 @@ import falcoremx.com.FalcoreMX.entity.User;
 import falcoremx.com.FalcoreMX.request.LogInRequest;
 import falcoremx.com.FalcoreMX.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,12 +39,14 @@ public class UserController {
     public List<User> getUsersByEmpresaId(@PathVariable Integer idEmpresa) {
         return userService.findByIdEmpresa(idEmpresa);
     }
-
-    @GetMapping("/users/login")
-    public User loginUser(@RequestBody LogInRequest user) {
-        String username = user.getUsername();
-        String password = user.getPassword();
-        return userService.findByUsernameAndPassword(username, password);
+@PostMapping("/users/login")
+public ResponseEntity<User> loginUser(@RequestBody LogInRequest user) {
+    String username = user.getUsername();
+    String password = user.getPassword();
+    User loggedInUser = userService.findByUsernameAndPassword(username, password);
+    if (loggedInUser == null) {
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
-
+    return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+}
 }
