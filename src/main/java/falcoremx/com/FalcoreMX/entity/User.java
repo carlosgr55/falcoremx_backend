@@ -3,6 +3,7 @@ package falcoremx.com.FalcoreMX.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import com.fasterxml.jackson.annotation.*;
 import java.util.List;
 
 @Entity
@@ -30,11 +31,14 @@ public class User {
     // Relaciones
     @ManyToOne
     @JoinColumn(name = "id_empresa", insertable = false, updatable = false)
+    @JsonIgnore
     private Empresa empresa;
 
     @OneToMany(mappedBy = "userEntity")
+    @JsonIgnore
     private List<RolEmpleado> rolesEmpleados;
 
     @OneToMany(mappedBy = "userEntity")
+    @JsonIgnore
     private List<Product> products;
 }

@@ -1,5 +1,7 @@
 package falcoremx.com.FalcoreMX.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -21,5 +23,6 @@ public class Rol {
 
     // Relaciones
     @OneToMany(mappedBy = "rolEntity")
+    @JsonIgnore
     private List<RolEmpleado> rolesEmpleados;
 }

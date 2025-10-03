@@ -1,5 +1,7 @@
 package falcoremx.com.FalcoreMX.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -24,9 +26,11 @@ public class DireccionEmpresa {
     // Relaciones
     @ManyToOne
     @JoinColumn(name = "empresa", insertable = false, updatable = false)
+    @JsonIgnore
     private Empresa empresaEntity;
 
     @ManyToOne
     @JoinColumn(name = "direccion", insertable = false, updatable = false)
+    @JsonIgnore
     private Direccion direccionEntity;
 }

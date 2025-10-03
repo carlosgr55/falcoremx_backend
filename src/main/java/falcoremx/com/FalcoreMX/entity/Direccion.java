@@ -1,5 +1,7 @@
 package falcoremx.com.FalcoreMX.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -33,5 +35,6 @@ public class Direccion {
 
     // Relaciones
     @OneToMany(mappedBy = "direccionEntity")
+    @JsonIgnore
     private List<DireccionEmpresa> direccionEmpresas;
 }

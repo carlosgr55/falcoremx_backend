@@ -1,5 +1,7 @@
 package falcoremx.com.FalcoreMX.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import falcoremx.com.FalcoreMX.entity.User;
 import falcoremx.com.FalcoreMX.entity.Product;
@@ -30,11 +32,14 @@ public class Empresa {
 
     // Relaciones
     @OneToMany(mappedBy = "empresa")
+    @JsonIgnore
     private List<User> users;
 
     @OneToMany(mappedBy = "empresaEntity")
+    @JsonIgnore
     private List<Product> products;
 
     @OneToMany(mappedBy = "empresaEntity")
+    @JsonIgnore
     private List<DireccionEmpresa> direccionEmpresas;
 }

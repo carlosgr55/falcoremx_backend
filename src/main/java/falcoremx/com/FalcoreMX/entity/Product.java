@@ -3,6 +3,7 @@ package falcoremx.com.FalcoreMX.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import com.fasterxml.jackson.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Table(name = "products")
 @Data
 @ToString(exclude = {"empresaEntity", "userEntity"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
     
     @Id
@@ -52,9 +54,11 @@ public class Product {
     // Relaciones
     @ManyToOne
     @JoinColumn(name = "empresa", insertable = false, updatable = false)
+    @JsonIgnore
     private Empresa empresaEntity;
 
     @ManyToOne
     @JoinColumn(name = "user", insertable = false, updatable = false)
+    @JsonIgnore
     private User userEntity;
 }
