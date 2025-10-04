@@ -31,6 +31,5 @@ public class DireccionEmpresa {
 
     @ManyToOne
     @JoinColumn(name = "direccion", insertable = false, updatable = false)
-    @JsonIgnore
     private Direccion direccionEntity;
 }

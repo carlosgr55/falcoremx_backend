@@ -31,6 +31,5 @@ public class RolEmpleado {
 
     @ManyToOne
     @JoinColumn(name = "rol", insertable = false, updatable = false)
-    @JsonIgnore
     private Rol rolEntity;
 }
