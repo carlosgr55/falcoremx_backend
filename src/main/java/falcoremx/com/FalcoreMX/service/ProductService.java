@@ -18,7 +18,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> findByIdEmpresa(Integer idEmpresa) {
+    public List<Product> findProductByEmpresa(Integer idEmpresa) {
         return productRepository.findProductByEmpresa(idEmpresa);
     }
 

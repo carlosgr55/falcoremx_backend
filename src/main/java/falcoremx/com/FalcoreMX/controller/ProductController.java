@@ -30,7 +30,8 @@ public class ProductController {
 
     @GetMapping("/products/empresa/{idEmpresa}")
     public List<Product> getProductsByEmpresaId(@PathVariable Integer idEmpresa) {
-        return productService.findByIdEmpresa(idEmpresa);
+        return productService.findProductByEmpresa(idEmpresa);
+
     }
 
 }
