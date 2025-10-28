@@ -36,7 +36,10 @@ public class EmpresaController {
         return empresaService.saveEmpresa(empresa);
     }
 
-
+    @GetMapping("/empresas/name/{idEmpresa}")
+    public String getEmpresaNameById(@PathVariable Integer idEmpresa) {
+        return empresaService.findEmpresaById(idEmpresa).getNombre();
+    }
 
 
 
