@@ -31,6 +31,11 @@ public class UserController {
         return userService.saveUser(user);
     }
 
+    @PostMapping("/users")
+    public User createUser(@RequestBody User user) {
+        return userService.saveUser(user);
+    }
+
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.findAllUsers();
@@ -45,14 +50,25 @@ public class UserController {
     public List<User> getUsersByEmpresaId(@PathVariable Integer idEmpresa) {
         return userService.findByIdEmpresa(idEmpresa);
     }
-@PostMapping("/users/login")
-public ResponseEntity<User> loginUser(@RequestBody LogInRequest user) {
-    String username = user.getUsername();
-    String password = user.getPassword();
-    User loggedInUser = userService.findByUsernameAndPassword(username, password);
-    if (loggedInUser == null) {
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    @PostMapping("/users/login")
+    public ResponseEntity<User> loginUser(@RequestBody LogInRequest user) {
+        String username = user.getUsername();
+        String password = user.getPassword();
+        User loggedInUser = userService.findByUsernameAndPassword(username, password);
+        if (loggedInUser == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
     }
-    return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
-}
+
+    @PutMapping("/users/password/change/{username}/{newPassword}")
+    public void changePassword(@PathVariable String username, @PathVariable String newPassword) {
+        userService.changePassword(username, newPassword);
+    }
+
+    @PutMapping("/users/resetPassword/{username}")
+    public void resetPassword(@PathVariable String username) {
+        userService.resetPassword(username);
+    }
+
 }

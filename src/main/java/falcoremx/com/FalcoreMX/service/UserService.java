@@ -39,4 +39,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public void resetPassword(String username){
+        userRepository.updatePasswordByUsername(username, "123");
+    }
+
+    public void changePassword(String username, String newPassword){
+        userRepository.updatePasswordByUsername(username, newPassword);
+    }
+
 }
