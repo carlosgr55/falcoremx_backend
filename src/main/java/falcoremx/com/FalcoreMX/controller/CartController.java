@@ -44,6 +44,16 @@ public class CartController {
 
     @PostMapping("/checkout/{username}")
     public void finalizarCompra(@PathVariable String username) {
-        cartService.cerrarCarrito(username);
+        cartService.checkout(username);
     }
+
+    @PutMapping("/update-quantity")
+    public CartItem updateQuantity(@RequestBody Map<String, Object> body) {
+        String username = (String) body.get("username");
+        Integer productId = (Integer) body.get("productId");
+        Integer nuevaCantidad = (Integer) body.get("cantidad");
+
+        return cartService.updateCartItemQuantity(username, productId, nuevaCantidad);
+    }
+
 }

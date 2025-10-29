@@ -2,10 +2,14 @@ package falcoremx.com.FalcoreMX.service;
 
 import falcoremx.com.FalcoreMX.entity.Cart;
 import falcoremx.com.FalcoreMX.entity.CartItem;
+import falcoremx.com.FalcoreMX.entity.PurchaseOrder;
+import falcoremx.com.FalcoreMX.entity.PurchaseOrderItem;
 import falcoremx.com.FalcoreMX.entity.Product;
 import falcoremx.com.FalcoreMX.repository.CartItemRepository;
 import falcoremx.com.FalcoreMX.repository.CartRepository;
 import falcoremx.com.FalcoreMX.repository.ProductRepository;
+import falcoremx.com.FalcoreMX.repository.PurchaseOrderItemRepository;
+import falcoremx.com.FalcoreMX.repository.PurchaseOrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -17,11 +21,15 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderItemRepository purchaseOrderItemRepository;
 
-    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductRepository productRepository) {
+    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository, PurchaseOrderItemRepository purchaseOrderItemRepository) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.productRepository = productRepository;
+        this.purchaseOrderRepository = purchaseOrderRepository;
+        this.purchaseOrderItemRepository = purchaseOrderItemRepository;
     }
 
     // Obtener o crear carrito activo
@@ -120,8 +128,63 @@ public class CartService {
             newItem.setProduct(product);
             newItem.setCantidad(cantidad);
             newItem.setPrecioUnitario(product.getPrecioUnitario().doubleValue());
+            newItem.setSubtotal(product.getPrecioUnitario().doubleValue() * cantidad);
             return cartItemRepository.save(newItem);
         }
+    }
+
+    @Transactional
+    public PurchaseOrder checkout(String username) {
+        // Obtener el carrito activo
+        Cart cart = cartRepository.findByUserAndActivoTrue(username)
+                .orElseThrow(() -> new RuntimeException("No hay carrito activo"));
+
+        // Obtener los items
+        List<CartItem> items = cartItemRepository.findByCartId(cart.getId());
+        if (items.isEmpty()) {
+            throw new RuntimeException("El carrito está vacío");
+        }
+
+        // Crear la orden
+        PurchaseOrder order = new PurchaseOrder();
+        order.setUser(username);
+        double total = items.stream()
+                .mapToDouble(i -> i.getCantidad() * i.getPrecioUnitario())
+                .sum();
+        order.setTotal(total);
+        order.setStatus("PENDIENTE");
+        order = purchaseOrderRepository.save(order);
+
+        // Crear los detalles
+        for (CartItem item : items) {
+            PurchaseOrderItem poItem = new PurchaseOrderItem();
+            poItem.setPurchaseOrder(order);
+            poItem.setProduct(item.getProduct());
+            poItem.setCantidad(item.getCantidad());
+            poItem.setPrecioUnitario(item.getPrecioUnitario());
+            purchaseOrderItemRepository.save(poItem);
+        }
+
+        // Marcar carrito como inactivo (ya se usó)
+        cart.setActivo(false);
+        cartRepository.save(cart);
+
+        return order;
+    }
+
+    @Transactional
+    public CartItem updateCartItemQuantity(String username, Integer productId, int nuevaCantidad) {
+        // Buscar el carrito activo del usuario
+        Cart cart = cartRepository.findByUserAndActivoTrue(username)
+                .orElseThrow(() -> new RuntimeException("No hay carrito activo"));
+
+        // Buscar el item correspondiente
+        CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId)
+                .orElseThrow(() -> new RuntimeException("El producto no está en el carrito"));
+
+        // Actualizar cantidad directamente
+        item.setCantidad(nuevaCantidad);
+        return cartItemRepository.save(item);
     }
 
 }
