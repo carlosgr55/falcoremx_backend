@@ -24,6 +24,7 @@ public class PurchaseOrderItem {
 
     @ManyToOne
     @JoinColumn(name = "purchase_order_id")
+    @JsonIgnore
     private PurchaseOrder purchaseOrder;
 
     @ManyToOne

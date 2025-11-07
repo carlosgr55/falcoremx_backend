@@ -3,6 +3,7 @@ package falcoremx.com.FalcoreMX.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,7 +26,7 @@ public class PurchaseOrder {
     private Integer id;
 
     private String user;
-    private Date fecha;
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
     private Double total;
     private String status;
 
@@ -33,6 +35,7 @@ public class PurchaseOrder {
     @JsonIgnore
     private User userEntity;
 
-    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "purchaseOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PurchaseOrderItem> items;
+
 }
